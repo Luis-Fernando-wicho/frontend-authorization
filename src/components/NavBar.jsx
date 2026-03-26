@@ -1,16 +1,21 @@
+import { useContext } from "react";
+import AppContext from "../context/ApiContext";
+
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { removeToken } from "../utils/token";
 import Logo from "./Logo";
 import "./styles/NavBar.css";
 
-function NavBar({ setIsLoggedIn }) {
+function NavBar({}) {
   const navigate = useNavigate();
+
+  const { setIsLoggedIn } = useContext(AppContext);
 
   function signOut() {
     removeToken();
     navigate("/login");
-    setIsLoggedIn(false);
+    setIsLoggedIn(false); // ← Usa la función del contexto
   }
 
   return (
