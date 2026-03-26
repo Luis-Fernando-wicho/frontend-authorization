@@ -22,7 +22,6 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const navigate = useNavigate();
-
   const location = useLocation();
 
   const handleRegistration = ({
@@ -53,10 +52,6 @@ function App() {
           setToken(data.jwt);
           setUserData(data.user);
           setIsLoggedIn(true);
-          // Después de iniciar sesión, en lugar de navegar todo el tiempo a /ducks,
-          // navega a la ubicación que se almacena en state. Si
-          // no hay ubicación almacenada, por defecto
-          // redirigimos a /ducks.
           const redirectPath = location.state?.from?.pathname || "/ducks";
           navigate(redirectPath);
         }
@@ -74,8 +69,6 @@ function App() {
     api
       .getUserInfo(jwt)
       .then(({ username, email }) => {
-        // si la respuesta es exitosa, inicia la sesión del usuario, guarda sus
-        // datos en el estado y lo dirige a /ducks.
         setIsLoggedIn(true);
         setUserData({ username, email });
       })
@@ -88,7 +81,7 @@ function App() {
         path="/ducks"
         element={
           <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <Ducks />
+            <Ducks setIsLoggedIn={setIsLoggedIn} />
           </ProtectedRoute>
         }
       />
@@ -97,11 +90,10 @@ function App() {
         path="/my-profile"
         element={
           <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <MyProfile userData={userData} />
+            <MyProfile userData={userData} setIsLoggedIn={setIsLoggedIn} />
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/login"
         element={
@@ -112,7 +104,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/register"
         element={
@@ -123,6 +114,7 @@ function App() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="*"
         element={
